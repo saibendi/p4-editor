@@ -15,8 +15,6 @@ template <typename T>
 class List {
   //OVERVIEW: a doubly-linked, double-ended list with Iterator interface
 public:
-    
-    List() : first(nullptr), last(nullptr) {}
 
   //EFFECTS:  returns true if the list is empty
     bool empty() const {
@@ -115,6 +113,21 @@ public:
   // will work correctly without defining these, you should omit them. A user
   // of the class must be able to create, copy, assign, and destroy Lists.
 
+    // default ctor
+    List() : list_size(0), first(nullptr), last(nullptr) {}
+    
+    // copy ctor
+    
+    
+    
+    // assignment operator
+    
+    
+    
+    // dtor
+
+    
+    
 private:
   //a private type
   struct Node {
@@ -134,7 +147,7 @@ private:
 
   Node *first;   // points to first Node in list, or nullptr if list is empty
   Node *last;    // points to last Node in list, or nullptr if list is empty
-/*
+
 public:
   ////////////////////////////////////////
   class Iterator {
@@ -171,8 +184,23 @@ public:
     //     violates the REQURES clause.
     // Note: comparing both the list and node pointers should be
     // sufficient to meet these requirements.
-
-
+      
+      T& operator* () const {
+          // TODO: can there be a scenario where node_ptr is nullptr, but list_ptr isn't?
+          assert(list_ptr != nullptr && node_ptr != nullptr);
+          return node_ptr->datum;
+      }
+      
+      Iterator& operator++ () {
+          // TODO: can there be a scenario where node_ptr is nullptr, but list_ptr isn't?
+          assert(list_ptr != nullptr && node_ptr != nullptr);
+          node_ptr = node_ptr->next;
+          return *this;
+      }
+      
+      bool operator!= (Iterator rhs) const {
+          return node_ptr != rhs.node_ptr;
+      }
 
     // Type aliases required to work with STL algorithms. Do not modify these.
     using iterator_category = std::bidirectional_iterator_tag;
@@ -226,22 +254,22 @@ public:
 
 
     // add any friend declarations here
-
+      friend class List;
 
     // construct an Iterator at a specific position in the given List
-    Iterator(const List *lp, Node *np);
+      Iterator(const List *lp, Node *np) : list_ptr (lp), node_ptr (np) {}
 
   };//List::Iterator
   ////////////////////////////////////////
 
   // return an Iterator pointing to the first element
     Iterator begin() const {
-        assert(false);
+        return Iterator(this, first);
     }
 
   // return an Iterator pointing to "past the end"
     Iterator end() const {
-        assert(false);
+        return Iterator(this, nullptr);
     }
 
   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
@@ -259,7 +287,7 @@ public:
     Iterator insert(Iterator i, const T &datum) {
         assert(false);
     }
-*/
+
 };//List
 
 
