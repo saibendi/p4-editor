@@ -105,7 +105,10 @@ public:
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes all items from the list
     void clear() {
-        assert(false);
+        while(!empty()) {
+            pop_front();
+        }
+        list_size = 0;
     }
 
   // You should add in a default constructor, destructor, copy constructor,
@@ -116,17 +119,27 @@ public:
     // default ctor
     List() : list_size(0), first(nullptr), last(nullptr) {}
     
+    /*
     // copy ctor
-    
-    
+    List(const List<T> &other) : list_size(0), first(nullptr), last(nullptr) {
+        copy_all(other);
+    }
     
     // assignment operator
-    
-    
-    
-    // dtor
+    List& operator=(const List<T> &rhs) {
+        if (this == &rhs) {  // preventing self-assignment
+            return *this;
+        }
+        clear();
+        copy_all(rhs);
+        return *this;
+    }
 
-    
+    // dtor
+    ~List() {
+        clear();
+    }
+    */
     
 private:
   //a private type
@@ -138,13 +151,17 @@ private:
 
   // size of the list for size() function
   int list_size;
-    
+    /*
   //REQUIRES: list is empty
   //EFFECTS:  copies all nodes from other to this
     void copy_all(const List<T> &other) {
-        assert(false);
+        // first need to assert that this list is empty
+        assert(empty());
+        for (Node *ptr = other.first; ptr != nullptr; ptr = ptr->next) {
+            push_back(ptr->datum);
+        }
     }
-
+*/
   Node *first;   // points to first Node in list, or nullptr if list is empty
   Node *last;    // points to last Node in list, or nullptr if list is empty
 
@@ -164,6 +181,15 @@ public:
     // will work correctly without defining these, you should omit them. A user
     // of the class must be able to copy, assign, and destroy Iterators.
 
+      // TODO: copy ctor
+      
+      
+      
+      // TODO: assignment operator
+      
+      
+      
+      // TODO: dtor
 
 
     // Your iterator should implement the following public operators:
@@ -198,6 +224,10 @@ public:
           return *this;
       }
       
+      bool operator== (Iterator rhs) const {
+          return node_ptr == rhs.node_ptr;
+      }
+
       bool operator!= (Iterator rhs) const {
           return node_ptr != rhs.node_ptr;
       }
@@ -271,16 +301,24 @@ public:
     Iterator end() const {
         return Iterator(this, nullptr);
     }
-
+/*
   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
   //MODIFIES: may invalidate other list iterators
   //EFFECTS: Removes a single element from the list container.
   //         Returns An iterator pointing to the element that followed the
   //         element erased by the function call
     Iterator erase(Iterator i) {
-        assert(false);
+        // asserting that list pointer points to this list
+        assert(i.list_ptr == this);
+        // asserting that node ptr isn't null
+        assert(i.node_ptr != nullptr);
+        
+        Node *temp = i.node_ptr->next;
+        delete i.node_ptr;
+        i.node_ptr = temp;
+        return i;
     }
-
+*/
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: Inserts datum before the element at the specified position.
   //         Returns an iterator to the the newly inserted element.
