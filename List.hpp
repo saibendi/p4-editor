@@ -85,10 +85,15 @@ public:
   //EFFECTS:  removes the item at the front of the list
     void pop_front() {
         assert(!empty());
-        Node *victim = first;
-        first = first->next;
+        Node* victim = first;
+        if (first == last) {
+            first = last = nullptr;
+        } else {
+            first = first->next;
+            first->prev = nullptr;
+        }
         delete victim;
-        first->prev = nullptr;
+        --list_size;
     }
 
   //REQUIRES: list is not empty
@@ -96,10 +101,15 @@ public:
   //EFFECTS:  removes the item at the back of the list
     void pop_back() {
         assert(!empty());
-        Node *victim = last;
-        last = last->prev;
+        Node* victim = last;
+        if (first == last) {
+            first = last = nullptr;
+        } else {
+            last = last->prev;
+            last->next = nullptr;
+        }
         delete victim;
-        last->next = nullptr;
+        --list_size;
     }
 
   //MODIFIES: may invalidate list iterators
@@ -108,7 +118,6 @@ public:
         while(!empty()) {
             pop_front();
         }
-        list_size = 0;
     }
 
   // You should add in a default constructor, destructor, copy constructor,
@@ -119,12 +128,12 @@ public:
     // default ctor
     List() : list_size(0), first(nullptr), last(nullptr) {}
     
-    /*
+    
     // copy ctor
     List(const List<T> &other) : list_size(0), first(nullptr), last(nullptr) {
         copy_all(other);
     }
-    
+
     // assignment operator
     List& operator=(const List<T> &rhs) {
         if (this == &rhs) {  // preventing self-assignment
@@ -139,7 +148,7 @@ public:
     ~List() {
         clear();
     }
-    */
+
     
 private:
   //a private type
@@ -151,7 +160,7 @@ private:
 
   // size of the list for size() function
   int list_size;
-    /*
+    
   //REQUIRES: list is empty
   //EFFECTS:  copies all nodes from other to this
     void copy_all(const List<T> &other) {
@@ -161,7 +170,7 @@ private:
             push_back(ptr->datum);
         }
     }
-*/
+
   Node *first;   // points to first Node in list, or nullptr if list is empty
   Node *last;    // points to last Node in list, or nullptr if list is empty
 
@@ -301,7 +310,7 @@ public:
     Iterator end() const {
         return Iterator(this, nullptr);
     }
-/*
+
   //REQUIRES: i is a valid, dereferenceable iterator associated with this list
   //MODIFIES: may invalidate other list iterators
   //EFFECTS: Removes a single element from the list container.
@@ -318,7 +327,7 @@ public:
         i.node_ptr = temp;
         return i;
     }
-*/
+
   //REQUIRES: i is a valid iterator associated with this list
   //EFFECTS: Inserts datum before the element at the specified position.
   //         Returns an iterator to the the newly inserted element.
