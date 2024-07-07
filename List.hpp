@@ -193,15 +193,21 @@ public:
     // of the class must be able to copy, assign, and destroy Iterators.
 
       // TODO: copy ctor
-      
+      Iterator(const Iterator& other) : list_ptr(other.list_ptr), node_ptr(other.node_ptr) {}
       
       
       // TODO: assignment operator
-      
-      
+      Iterator operator=(const Iterator& rhs) {
+          list_ptr = rhs.list_ptr;
+          node_ptr = rhs.node_ptr;
+          return *this;
+      }
       
       // TODO: dtor
-
+      ~Iterator() {
+          list_ptr = nullptr;
+          node_ptr = nullptr;
+      }
 
     // Your iterator should implement the following public operators:
     // *, ++ (both prefix and postfix), == and !=.
@@ -230,16 +236,20 @@ public:
       
       Iterator& operator++ () {
           // TODO: can there be a scenario where node_ptr is nullptr, but list_ptr isn't?
-          assert(list_ptr != nullptr && node_ptr != nullptr);
-          node_ptr = node_ptr->next;
+          // removed  node_ptr != nullptr in assert condition bc we need to be able to go to the nullptr location as well
+          assert(list_ptr);
+          assert(*this != list_ptr->end());
+          if (node_ptr) {
+              node_ptr = node_ptr->next;
+          }
           return *this;
       }
       
-      bool operator== (Iterator rhs) const {
+      bool operator== (const Iterator& rhs) const {
           return node_ptr == rhs.node_ptr;
       }
 
-      bool operator!= (Iterator rhs) const {
+      bool operator!= (const Iterator& rhs) const {
           return node_ptr != rhs.node_ptr;
       }
 
