@@ -58,7 +58,7 @@ public:
             first->prev = p;
             first = p;  // first ptr points to the new Node now
         }
-        list_size++; // increment size whenever you add new Node
+        ++list_size; // increment size whenever you add new Node
     }
 
   //EFFECTS:  inserts datum into the back of the list
@@ -77,13 +77,14 @@ public:
             last->next = p;
             last = p;  // last ptr points to the new Node now
         }
-        list_size++;
+        ++list_size;
     }
 
   //REQUIRES: list is not empty
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the front of the list
     void pop_front() {
+        //previous implementation doesn't take into account what to do with last when the list is empty
         assert(!empty());
         Node* victim = first;
         if (first == last) {
@@ -100,6 +101,7 @@ public:
   //MODIFIES: may invalidate list iterators
   //EFFECTS:  removes the item at the back of the list
     void pop_back() {
+        //previous implementation doesn't take into account what to do with last when the list is empty
         assert(!empty());
         Node* victim = last;
         if (first == last) {
@@ -322,9 +324,9 @@ public:
         // asserting that node ptr isn't null
         assert(i.node_ptr != nullptr);
         
-        Node *temp = i.node_ptr->next;
-        delete i.node_ptr;
-        i.node_ptr = temp;
+        Node *temp = i.node_ptr;
+        i.node_ptr = i.node_ptr->next;
+        delete temp;
         return i;
     }
 
@@ -332,9 +334,29 @@ public:
   //EFFECTS: Inserts datum before the element at the specified position.
   //         Returns an iterator to the the newly inserted element.
     Iterator insert(Iterator i, const T &datum) {
-        assert(false);
-    }
+        // asserting that list pointer points to this list
+        assert(i.list_ptr == this);
 
+        Node *temp = i.node_ptr;
+        if (temp == first) { // if i is at the front of the list
+            push_front(datum);
+            return begin();
+        }
+        else if (temp == nullptr) { // if i is at the back of the list
+            push_back(datum);
+            return Iterator(this, last);
+        }
+        else {  // if i is somewhere in the middle of the list
+            Node *new_node = new Node;
+            new_node->datum = datum;
+            new_node->prev = temp->prev;
+            new_node->next = temp;
+            temp->prev = new_node;
+            temp->prev->next = new_node;
+            ++list_size;
+            return Iterator(this, new_node);
+        }
+    }
 };//List
 
 
