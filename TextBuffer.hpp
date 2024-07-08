@@ -176,7 +176,20 @@ private:
   //EFFECTS: Computes the column of the cursor within the current row.
   //NOTE: This does not assume that the "column" member variable has
   //      a correct value (i.e. the row/column INVARIANT can be broken).
-  int compute_column() const;
+    int compute_column() const {
+        if (row == 1) {
+            return index;
+        }
+        else {
+            int temp = 0;
+            Iterator temp_cursor(cursor);
+            do {
+                --temp_cursor;
+                ++temp;
+            } while (*temp_cursor != '\n');
+            return (temp - 1);
+        }
+    }
 };
 
 #endif // TEXTBUFFER_HPP

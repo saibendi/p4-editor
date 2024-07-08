@@ -335,9 +335,22 @@ public:
         assert(i.node_ptr != nullptr);
         
         Node *temp = i.node_ptr;
-        i.node_ptr = i.node_ptr->next;
-        delete temp;
-        return i;
+        if (temp == first) {
+            pop_front();
+            return begin(); // returns element that followed what we removed, which now becomes first in List
+        }
+        else if (temp == last) {
+            pop_back();
+            return end();   // returns element past the last node
+        }
+        else {
+            temp->prev->next = temp->next;
+            temp->next->prev = temp->prev;
+            i.node_ptr = i.node_ptr->next;
+            delete temp;
+            --list_size;
+            return i;      // i now points to the next ptr 
+        }
     }
 
   //REQUIRES: i is a valid iterator associated with this list

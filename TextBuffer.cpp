@@ -24,22 +24,25 @@ TextBuffer::TextBuffer() {
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 bool TextBuffer::forward() {
-    return false;
-}/*{
-      if (is_at_end()) {
-          return false;
-      }
-      if (*cursor != '\n') {
-          
-      }
-      ++cursor;
-      row
-      return true;
-  }*/
+    if (cursor == data.end()) {     // if cursor is on the last iterator / node
+        return false;
+    }
+    if (data_at_cursor() == '\n') { // if currently on newline char, when you increment, ++row, column = 0 and ++cursor;
+        ++row;
+        column = 0;
+        ++cursor;
+    }
+    else {                          // if not newline char, row unchanged, ++column, and ++cursor;
+        ++column;
+        ++cursor;
+    }
+    ++index;
+    return true;
+}
 
 //MODIFIES: *this
 //EFFECTS:  Moves the cursor one position backward and returns true,
-//          unless the cursor is is already at the first character in
+//          unless the cursor is already at the first character in
 //          the buffer, in which case this does nothing and returns false.
 //HINT:     Implement and use the private compute_column() member
 //          function to compute the column when moving left from the
@@ -47,7 +50,19 @@ bool TextBuffer::forward() {
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 bool TextBuffer::backward() {
-    return false;
+    if (cursor == data.begin()) {   // if cursor is on the first iterator / node
+        return false;
+    }
+    --cursor;
+    if (data_at_cursor() == '\n') {
+        --row;
+        column = compute_column();
+    }
+    else {
+        --column;
+    }
+    --index;
+    return true;
 }
 
 //MODIFIES: *this
@@ -60,7 +75,19 @@ bool TextBuffer::backward() {
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 bool TextBuffer::remove() {
-    return false;
+    if (cursor == data.end()) {     // if cursor is on the last iterator / node
+        return false;
+    }
+    
+    --index;            // index decreases either way
+    if (data_at_cursor() == '\n') {    // if erasing newline, gets rid of a row, so row decrements and column doesn't change
+        data.erase(cursor);    // TODO: do i need to do cursor =?
+        --row;
+    }
+    else {              // if not newline, it's the same row, so column decrements
+        --column;
+    }
+    return true;
 }
 
 //MODIFIES: *this
@@ -71,7 +98,15 @@ bool TextBuffer::remove() {
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 void TextBuffer::insert(char c) {
-    
+    data.insert(cursor, c); // inserting char 'c' right before cursor location - func takes care of edge cases
+    if (c == '\n') {    // if newline, new row and column resets
+        ++row;
+        column = 0;
+    }
+    else {              // if not newline, same row, column increases by 1
+        ++column;
+    }
+    ++index;            // index increases either way
 }
 
 //MODIFIES: *this
@@ -186,7 +221,7 @@ bool TextBuffer::down() {
 //      begin and end iterator. You may use this implementation:
 //        return std::string(data.begin(), data.end());
 std::string TextBuffer::stringify() const {
-      if (data.begin() == data.end()) {   // if empty buffer
+      if (data.empty()) {   // if empty buffer
           return "";
       }
       return std::string(data.begin(), data.end());

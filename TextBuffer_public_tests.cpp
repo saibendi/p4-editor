@@ -13,12 +13,12 @@ TEST(test_new_editor) {
   ASSERT_EQUAL(buffer.stringify(), "");
   ASSERT_EQUAL(buffer.get_index() , 0);
 }
-/*
+
 TEST(test_insert) {
   TextBuffer buffer;
-  buffer.insert('A');
+  buffer.insert('\n');
   buffer.backward();
-  ASSERT_EQUAL(buffer.data_at_cursor() , 'A');
+  ASSERT_EQUAL(buffer.data_at_cursor() , '\n');
 }
 
 TEST(test_insert_row) {
@@ -29,6 +29,7 @@ TEST(test_insert_row) {
   buffer.insert('b');
 }
 
+
 TEST(test_insert_col) {
   TextBuffer buffer;
   ASSERT_EQUAL(buffer.get_column() , 0);
@@ -36,6 +37,7 @@ TEST(test_insert_col) {
   ASSERT_EQUAL(buffer.get_column() , 1);
   buffer.insert('b');
 }
+
 
 TEST(test_insert_multiple_chars) {
   TextBuffer buffer;
@@ -72,6 +74,7 @@ TEST(test_insert_newline) {
   ASSERT_EQUAL(buffer.data_at_cursor() , 'a');
 }
 
+
 TEST(test_remove) {
   TextBuffer buffer;
   buffer.insert('a');
@@ -87,6 +90,7 @@ TEST(test_remove) {
   ASSERT_EQUAL(buffer.stringify() , "ab");
 }
 
+/*
 TEST(test_move_to_row_start) {
   TextBuffer buffer;
   buffer.insert('a');
