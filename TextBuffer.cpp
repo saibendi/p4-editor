@@ -80,12 +80,10 @@ bool TextBuffer::remove() {
     }
     
     --index;            // index decreases either way
+    data.erase(cursor);    // TODO: do i need to do cursor =?
+    // column doesn't change either way
     if (data_at_cursor() == '\n') {    // if erasing newline, gets rid of a row, so row decrements and column doesn't change
-        data.erase(cursor);    // TODO: do i need to do cursor =?
         --row;
-    }
-    else {              // if not newline, it's the same row, so column decrements
-        --column;
     }
     return true;
 }
@@ -113,14 +111,19 @@ void TextBuffer::insert(char c) {
 //EFFECTS:  Moves the cursor to the start of the current row (column 0).
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
-void TextBuffer::move_to_row_start() {/*
-      while (compute_column() != 0) {
-          --cursor;
-          --index;    // index gets decremented
-      }
-      column = 0;
-      // value of row doesn't change
-                                       */
+void TextBuffer::move_to_row_start() {
+    do {
+        --cursor;
+        --index;
+    }
+    while(data_at_cursor() != '\n' && cursor != data.begin()); // if cursor value isn't newline AND if cursor isn't first node
+    
+    if (data_at_cursor() == '\n') { // cursor get's reset to first char in row
+        ++cursor;
+        ++index;
+    }
+    // column reset to 0, row get's unchanged;
+    column = 0;
   }
 
 //MODIFIES: *this
@@ -130,7 +133,13 @@ void TextBuffer::move_to_row_start() {/*
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 void TextBuffer::move_to_row_end() {
-    
+    // order of while loop conditions important here bc you can't do a data_at_cursor at end() iterator
+    while (cursor != data.end() && data_at_cursor() != '\n') {  // cursor only increments if not at end of row already
+        ++cursor;
+        ++index;
+    }
+    // column value changes, row stays the same
+    column = compute_column();
 }
 
 //REQUIRES: new_column >= 0
@@ -143,7 +152,6 @@ void TextBuffer::move_to_row_end() {
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 void TextBuffer::move_to_column(int new_column) {
-    
 }
 
 
