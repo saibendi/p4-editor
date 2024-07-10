@@ -134,10 +134,15 @@ void TextBuffer::move_to_row_start() {
 //          if appropriate to maintain all invariants.
 void TextBuffer::move_to_row_end() {
     // order of while loop conditions important here bc you can't do a data_at_cursor at end() iterator
+    //std::cout << "Entering move_to_row_end()" << std::endl;
+    
+    //std::cout << "Index 1: " << index << std::endl;
+
     while (cursor != data.end() && data_at_cursor() != '\n') {  // cursor only increments if not at end of row already
         ++cursor;
         ++index;
     }
+    //std::cout << "Index 2: " << index << std::endl;
     // column value changes, row stays the same
     column = compute_column();
 }
@@ -152,21 +157,53 @@ void TextBuffer::move_to_row_end() {
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 void TextBuffer::move_to_column(int new_column) {
+    //std::cout << "Entering move_to_column()" << std::endl;
+
+    // TODO: check to see if condition where new_column == column should be included
+    //std::cout << "New Column: " << new_column << std::endl;
+    //std::cout << "Column 1: " << column << std::endl;
+
+    move_to_row_end();
+    //std::cout << "Column 2: " << column << std::endl;
+    //std::cout << "Index 3: " << index << std::endl;
+
+    if (new_column < column) {
+        while (column != new_column) {
+            backward(); // decrements cursor backwards and all other invariants
+        }
+    }
 }
 
 
 //MODIFIES: *this
 //EFFECTS:  Moves the cursor to the previous row, retaining the
-//          current column if possible. If the previous row is
+//          current column if possible.
+
+//          If the previous row is
 //          shorter than the current column, moves to the end of the
 //          previous row (the newline character that ends the row).
+
 //          Does nothing if the cursor is already in the first row.
+
 //          Returns true if the position changed, or false if it did
 //          not (i.e. if the cursor was already in the first row).
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 bool TextBuffer::up() {
-    return false;
+    //std::cout << "Entering up()" << std::endl;
+    if (row == 1) {
+        return false;
+    }
+    else {    // if row not equal to 1
+        int original_row_column = column;
+        //std::cout << "Original Row Column: " << original_row_column << std::endl;
+        move_to_row_start();    // go to beginning of row, to keep track of index
+        backward();             // go back one to previous row's \n
+        //std::cout << "Index 0: " << index << std::endl;
+        move_to_column(original_row_column);             // move to row end
+        //std::cout << "Entering up()" << std::endl;
+        return true;
+    }
 }
 
 //MODIFIES: *this

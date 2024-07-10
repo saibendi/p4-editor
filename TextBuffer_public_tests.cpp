@@ -113,7 +113,7 @@ TEST(test_move_to_row_end) {
   ASSERT_EQUAL(buffer.get_row() , 1);
   ASSERT_EQUAL(buffer.get_column() , 3);
 }
-/*
+
 TEST(test_move_to_column) {
   TextBuffer buffer;
   for(int i = 0; i<62; i++) {
@@ -159,6 +159,7 @@ TEST(test_up) {
   ASSERT_EQUAL(buffer.get_column() , 5);
 }
 
+/*
 TEST(test_down) {
   TextBuffer buffer;
   for(int i = 0; i<10; i++) {
