@@ -218,7 +218,15 @@ bool TextBuffer::up() {
 //NOTE:     Your implementation must update the row, column, and index
 //          if appropriate to maintain all invariants.
 bool TextBuffer::down() {
-    return false;
+    int original_row_column = column;
+    move_to_row_end();
+    if (is_at_end()) {                               // if we're at the end of the buffer, there's no more rows
+        move_to_column(original_row_column);         // move back to original column of that same row
+        return false;                                // And return false
+    }
+    forward();                              // step into the new row
+    move_to_column(original_row_column);    // func defaults to end of row and walks backwards to original_row_column
+    return true;
 }
 
 //EFFECTS:  Returns whether the cursor is at the past-the-end position.

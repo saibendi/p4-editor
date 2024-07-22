@@ -159,7 +159,6 @@ TEST(test_up) {
   ASSERT_EQUAL(buffer.get_column() , 5);
 }
 
-/*
 TEST(test_down) {
   TextBuffer buffer;
   for(int i = 0; i<10; i++) {
@@ -204,5 +203,4 @@ TEST(test_stringify) {
   ASSERT_EQUAL(buffer.stringify(), "efg\nhijk\n");
   ASSERT_EQUAL(buffer.get_index(),9);
 }
-*/
 TEST_MAIN()
